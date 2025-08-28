@@ -1,50 +1,43 @@
-
 import pandas as pd
-from pdf2image import convert_from_path
-import pytesseract
+import pdfplumber
+import numpy as np
 
 def parse(pdf_path: str) -> pd.DataFrame:
+    def clean_num(value):
+        if value is None:
+            return np.nan
+        s = str(value).replace(",", "").replace("(", "-").replace(")", "").strip()
+        try:
+            val = float(s)
+            return np.nan if val == 0.0 else val
+        except:
+            return np.nan
+
     try:
-        pages = convert_from_path(pdf_path, dpi=400)
-        text = ""
-        for page in pages:
-            text += pytesseract.image_to_string(page) + "\n"
+        rows = []
+        with pdfplumber.open(pdf_path) as pdf:
+            for page in pdf.pages:
+                tables = page.extract_tables()
+                for table in tables:
+                    for row in table:
+                        if len(row) != 5:
+                            continue
+                        if row[0] is None or row[0].strip().lower() == "date":
+                            continue
+                        date = row[0].strip()
+                        desc = row[1].strip() if row[1] else ''
+                        debit = clean_num(row[2])
+                        credit = clean_num(row[3])
+                        balance = clean_num(row[4])
 
-        lines = [line.strip() for line in text.splitlines() if line.strip()]
-
-        start_index = 0
-        for i, line in enumerate(lines):
-            if line.lower() == "date":
-                start_index = i + 1
-                break
-
-        transactions = []
-        for idx in range(start_index, len(lines), 5):
-            block = lines[idx:idx+5]
-            if len(block) < 5:
-                break
-
-            date, description, debit, credit, balance = block
-
-            def clean_num(s):
-                s = s.replace(",", "").replace("(", "-").replace(")", "").strip()
-                try:
-                    val = float(s)
-                    if val == 0.0:
-                        return ""
-                    return val
-                except:
-                    return ""
-
-            transactions.append({
-                "Date": date,
-                "Description": description,
-                "Debit Amt": clean_num(debit),
-                "Credit Amt": clean_num(credit),
-                "Balance": clean_num(balance),
-            })
-
-        return pd.DataFrame(transactions)
+                        rows.append({
+                            "Date": date,
+                            "Description": desc,
+                            "Debit Amt": debit,
+                            "Credit Amt": credit,
+                            "Balance": balance,
+                        })
+        return pd.DataFrame(rows)
 
     except Exception as e:
         print(f"[Parser] Error: {e}")
