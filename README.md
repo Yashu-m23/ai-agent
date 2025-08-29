@@ -50,7 +50,7 @@ pip install -r requirements.txt
    Custom parser scripts are saved under `custom_parsers/<target>_parser.py`.
 
 
-**Output/Results**
+## Output/Results
 
 ```
  [Agent] Attempt 1 of 3                                           
