@@ -59,6 +59,8 @@ pip install -r requirements.txt
  [Agent] Parsing succeeded.
 ```
 
+
+
 **Note:**
 
 accuracy.py evaluates parser performance by comparing the parsed DataFrame to the expected CSV using tolerant field-level checks for minor numeric and text differences. It outputs a percentage accuracy reflecting correctly parsed fields and dynamically loads the parser to run on the given PDF.
