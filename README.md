@@ -12,6 +12,9 @@ The agent orchestrates a 3-node pipeline:
 
 The agent runs multiple attempts, analyzing failure causes (e.g., fewer rows parsed) and adapts parameters (like increasing OCR DPI) to improve parsing until success or max retries.
 
+
+The agent follows a three-node pipeline architecture: the PlanNode determines the input PDF and expected CSV file paths along with the output parser location. The GenerateNode dynamically creates a custom Python parser script tailored to the target bank statement format, using pdfplumber for PDF extraction and optional OCR parameters. Finally, the TestNode loads the generated parser, runs it on the input PDF, and compares the parsed transactions against the ground truth CSV using pandas testing utilities to validate accuracy. The pipeline supports multiple attempts with adaptive tuning of parameters like OCR DPI to improve parsing results until success or reaching the maximum retries, ensuring robust and automated parsing of varied bank statement PDFs.
+
 ## Getting Started
 
 ### Prerequisites
