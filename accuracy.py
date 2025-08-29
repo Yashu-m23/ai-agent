@@ -2,26 +2,22 @@ import pandas as pd
 import numpy as np
 
 def approximately_equal(a, b, tol=0.01):
-    # Numeric comparison with tolerance or exact match for non-numeric
     if pd.isna(a) and pd.isna(b):
         return True
     try:
         return abs(float(a) - float(b)) <= tol
     except:
-        # For strings, compare case-insensitive stripped versions
         return str(a).strip().lower() == str(b).strip().lower()
 
 def detailed_field_accuracy(df_expected, df_actual):
     df_expected = df_expected.reset_index(drop=True)
     df_actual = df_actual.reset_index(drop=True)
 
-    # Align columns present in expected
     df_actual = df_actual[df_expected.columns]
 
-    total_fields = df_expected.size  # total elements to compare
+    total_fields = df_expected.size  
     match_count = 0
 
-    # Iterate row-wise and column-wise to count matches
     for i in range(len(df_expected)):
         for col in df_expected.columns:
             val_exp = df_expected.at[i, col]
