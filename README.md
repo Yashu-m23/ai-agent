@@ -45,10 +45,11 @@ The agent runs multiple attempts, analyzing failure causes (e.g., fewer rows par
 
 
 **Output/Results**
-`[Agent] Attempt 1 of 3                                           
- [Agent] Generated parser at custom_parsers/icici_parser.py with dpi=300
- [Agent] Test result: PASS
- [Agent] Parsing succeeded.`
+
+`[Agent] Attempt 1 of 3`                                           
+`[Agent] Generated parser at custom_parsers/icici_parser.py with dpi=300`
+`[Agent] Test result: PASS`
+`[Agent] Parsing succeeded.`
 
 **Note**
 accuracy.py evaluates parser performance by comparing the parsed DataFrame to the expected CSV using tolerant field-level checks for minor numeric and text differences. It outputs a percentage accuracy reflecting correctly parsed fields and dynamically loads the parser to run on the given PDF.
